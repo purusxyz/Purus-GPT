@@ -44,7 +44,7 @@ if (process.env.NODE_ENV !== "production") {
 // ==========================
 // 🔹 Routes
 // ==========================
-app.use("/api/v1/user", userRoutes); // Auth routes
+// app.use("/api/v1/user", userRoutes); // Auth routes
 app.use("/api/v1", appRouter);       // Other routes
 
 // ==========================
