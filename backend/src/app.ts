@@ -16,7 +16,7 @@ const app = express();
 // ==========================
 const allowedOrigins = [
   "http://localhost:5173",                   // Local dev
-  "https://mern-gpt-1-1-prefinal.vercel.app" // Deployed frontend
+  "https://purus-gpt-frontend.vercel.app" // Deployed frontend
 ];
 
 app.use(cors({

@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL || "https://purus-gpt-backend.vercel.app";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 axios.defaults.baseURL = API_URL;
 // axios.defaults.baseURL = "http://localhost:5000/api/v1";
 axios.defaults.withCredentials = true; // Enable sending cookies with requests
