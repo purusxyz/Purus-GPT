@@ -3,6 +3,9 @@
   import { hash, compare } from 'bcrypt'
   import { createToken } from "../utils/token-manager.js";
   import { COOKIE_NAME } from "../utils/constants.js";
+  
+  export const isProd = process.env.NODE_ENV === "production";
+
     
   
   export const getAllUsers = async (
@@ -25,7 +28,8 @@
         
         req: Request, 
         res: Response, 
-        next: NextFunction) => {
+        next: NextFunction
+      ) => {
         try {
             // user signup 
         const { name, email, password } = req.body;
@@ -34,13 +38,16 @@
         const hashedPassword = await hash(password, 10);
         const user = new User({ name, email, password: hashedPassword });
         await user.save();
-        
+
+       
         //create token and store cookie
         res.clearCookie(COOKIE_NAME, {
            httpOnly: true,
-           domain: "localhost",
+        //    domain: "localhost",
            signed: true,
            path: "/",
+           secure: isProd,
+           sameSite: isProd ? "none" : "lax",
         });
 
 
@@ -49,19 +56,22 @@
          expires.setDate(expires.getDate() + 7);
          res.cookie(COOKIE_NAME, token, { 
              path: "/",
-             domain: "localhost",
+            //  domain: "localhost",
              expires, 
              httpOnly: true,
              signed: true,
+             secure: isProd,
+             sameSite: isProd ? "none" : "lax",
            });
 
 
-            return res.status(201).json({ message: "OK", name: user.name, email: user.email });
+        return res.status(201).json({ message: "ok", name: user.name, email: user.email });
         } catch (error) {
-            console.error(error);
-            return res.status(200).json({ message: "Internal Server Error", cause: error.message });
+            console.log(error);
+            return res.status(200).json({ message: "Error", cause: error.message });
         }
     };
+
 
 
      export const userLogin = async (
@@ -76,17 +86,20 @@
         if (!user) { 
             return res.status(401).send({ message: "User not found" });
         }
-        const isPasswordValid = await compare(password, user.password);
-        if (!isPasswordValid) {
+        const isPasswordCorrect = await compare(password, user.password);
+        if (!isPasswordCorrect) {
             return res.status(403).send({ message: "Invalid password" });
         }
 
+    
         //create token and store cookie
         res.clearCookie(COOKIE_NAME, {
            httpOnly: true,
-           domain: "localhost",
+        //    domain: "localhost",
            signed: true,
            path: "/",
+           secure: isProd,
+           sameSite: isProd ? "none" : "lax",
         });
 
 
@@ -95,17 +108,19 @@
          expires.setDate(expires.getDate() + 7);
          res.cookie(COOKIE_NAME, token, { 
              path: "/",
-             domain: "localhost",
+            //  domain: "localhost",
              expires, 
              httpOnly: true,
              signed: true,
+             secure: isProd,
+             sameSite: isProd ? "none" : "lax",
            });
 
 
          return res.status(200).json({ message: "OK", name: user.name, email: user.email });
         } catch (error) {
-            console.error(error);
-            return res.status(200).json({ message: "Internal Server Error", cause: error.message });
+            console.log(error);
+            return res.status(200).json({ message: "Error", cause: error.message });
         }
     };
 
@@ -129,13 +144,10 @@
             return res.status(401).send("Permission denied" );
         }
         
-
-        
-
          return res.status(200).json({ message: "OK", name: user.name, email: user.email  } );
         } catch (error) {
-            console.error(error);
-            return res.status(200).json({ message: "Internal Server Error", cause: error.message });
+            console.log(error);
+            return res.status(200).json({ message: "Error", cause: error.message });
         }
     };
 
@@ -160,15 +172,17 @@
 
         res.clearCookie(COOKIE_NAME, {
            httpOnly: true,
-           domain: "localhost",
+        //    domain: "localhost",
            signed: true,
            path: "/",
+           secure: isProd,
+           sameSite: isProd ? "none" : "lax",
         });
 
         
          return res.status(200).json({ message: "OK", name: user.name, email: user.email });
         } catch (error) {
-            console.error(error);
+            console.log(error);
             return res.status(200).json({ message: "Internal Server Error", cause: error.message });
         }
     };

@@ -2,11 +2,12 @@ import { NextFunction, Request, Response} from 'express';
 import { body, ValidationChain, validationResult } from "express-validator";
 
 
- export const validator = (validations: ValidationChain[]) => {
+ export const validate = (validations: ValidationChain[]) => {
     return async (req: Request, res: Response, next: NextFunction) => {
       for (let validation of validations) {
-    const result = await validation.run(req);
-    if (!result.isEmpty()) {
+       await validation.run(req);
+        const errors = validationResult(req);
+    if (!errors.isEmpty()) {
         break;
     }
 }
@@ -21,9 +22,11 @@ import { body, ValidationChain, validationResult } from "express-validator";
 };
 
   export const loginValidator = [
-    
-    body('email').isEmail().withMessage('Email is required'),
-    body('password').trim().isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+     body('email').trim().isEmail().withMessage('Email is required'),
+    body('password')
+    .trim()
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters'),
 ];
 
 

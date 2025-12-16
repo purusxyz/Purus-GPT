@@ -2,10 +2,10 @@ import jwt from "jsonwebtoken";
 import {Request, Response, NextFunction } from "express";
 import { COOKIE_NAME } from "./constants.js";
 
-export const createToken = (id: string, email: string, expiresIn) => {
+export const createToken = (id: string, email: string, expiresIn: string) => {
     const payload = { id, email };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { 
-        expiresIn,
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, { 
+        expiresIn: expiresIn as any
      });
     return token;
 };
@@ -25,7 +25,6 @@ export const verifyToken = async (
                 reject(err.message);
                 return res.status(401).json({ message: "Token Expired" });
             } else {
-                console.log("Token verified successfully");
                 resolve();
                 res.locals.jwtData = success;
                 return next();
