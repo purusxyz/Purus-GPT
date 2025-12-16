@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// 🟢 LOGIN
+//  LOGIN
 export const loginUser = async (email: string, password: string) => {
   const res = await axios.post("/api/v1/user/login", { email, password });
   if (res.status !== 200) {
@@ -10,7 +10,7 @@ export const loginUser = async (email: string, password: string) => {
   return data;
 };
 
-// 🟢 SIGNUP
+//  SIGNUP
 export const signupUser = async (name: string, email: string, password: string) => {
   const res = await axios.post("/api/v1/user/signup", { name, email, password });
   if (res.status !== 201) {
@@ -20,7 +20,7 @@ export const signupUser = async (name: string, email: string, password: string) 
   return data;
 };
 
-// 🟢 AUTH STATUS CHECK
+//  AUTH STATUS CHECK
 export const checkAuthStatus = async () => {
   const res = await axios.get("/api/v1/user/auth-status");
   if (res.status !== 200) {
@@ -30,7 +30,7 @@ export const checkAuthStatus = async () => {
   return data;
 };
 
-// 🟢 SEND CHAT REQUEST
+//  SEND CHAT REQUEST
 export const sendChatRequest = async (message: string) => {
   const res = await axios.post("/api/v1/chat/new", { message });
   if (res.status !== 200) {
@@ -40,7 +40,7 @@ export const sendChatRequest = async (message: string) => {
   return data;
 };
 
-// 🟢 GET USER CHATS
+//  GET USER CHATS
 export const getUserChats = async () => {
   const res = await axios.get("/api/v1/chat/all-chats");
   if (res.status !== 200) {
@@ -50,7 +50,7 @@ export const getUserChats = async () => {
   return data;
 };
 
-// 🟢 DELETE USER CHATS
+//  DELETE USER CHATS
 export const deleteUserChats = async () => {
   const res = await axios.delete("/api/v1/chat/delete");
   if (res.status !== 200) {
@@ -60,7 +60,7 @@ export const deleteUserChats = async () => {
   return data;
 };
 
-// 🟢 LOGOUT
+//  LOGOUT
 export const logoutUser = async () => {
   const res = await axios.get("/api/v1/user/logout");
   if (res.status !== 200) {
