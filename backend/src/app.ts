@@ -9,9 +9,25 @@ config();
 const app = express();
 
 const isProd = process.env.NODE_ENV === "production";
-// middlewares
-app.use(cors({ origin: isProd ? process.env.CLIENT_URL : "http://localhost:5173",
-     credentials: true }));
+
+const CLIENT_URL = isProd
+  ? process.env.CLIENT_URL
+  : "http://localhost:5173";
+
+// ─────────────────────────────────────────────
+// CORS (Vercel-safe & credential-safe)
+// ─────────────────────────────────────────────
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// 🔴 REQUIRED for preflight requests on Vercel
+app.options("*", cors());
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
@@ -22,7 +38,7 @@ app.use("/api/v1", appRouter);
 
 // health check route
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "Server is running successfully ✅" });
+  res.status(200).json({ message: "Server is running successfully" });
 });
 
 export default app;
