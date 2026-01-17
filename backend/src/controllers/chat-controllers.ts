@@ -2,14 +2,20 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User.js";
 import openai from "../config/openai-config.js"; // ✅ import default export
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+// import { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+
+
+type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
 
 export const generateChatCompletion = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { messages } = req.body;
+  const { message } = req.body;
 
   try {
     const user = await User.findById(res.locals.jwtData.id);
@@ -22,10 +28,10 @@ export const generateChatCompletion = async (
     // ✅ prepare chat history
     const chats = user.chats.map(
       ({ role, content }) => ({ role, content })
-    ) as ChatCompletionMessageParam[];
+    ) as ChatMessage[];
 
-    chats.push({ role: "user", content: messages });
-    user.chats.push({ role: "user", content: messages });
+    chats.push({ role: "user", content: message });
+    user.chats.push({ role: "user", content: message });
 
     // ✅ call OpenAI
     const chatResponse = await openai.chat.completions.create({
